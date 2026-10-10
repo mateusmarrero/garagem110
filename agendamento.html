@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agendamento Online | Barbearia Garagem 110 — Campo Grande, RJ</title>
+  <meta name="description" content="Agende seu corte, barba ou combo na Barbearia Garagem 110 (Campo Grande, Rio de Janeiro). Escolha o serviço, veja o preço, o profissional e o melhor horário. Confirme em segundos." />
+  <meta name="keywords" content="agendar barbearia, agendamento online, barbearia Campo Grande, corte, barba, degrade" />
+  <meta name="author" content="Barbearia Garagem 110" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0b0b0d" />
+  <link rel="canonical" href="https://www.garagem110.com.br/agendamento.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:site_name" content="Barbearia Garagem 110" />
+  <meta property="og:title" content="Agendamento Online | Barbearia Garagem 110" />
+  <meta property="og:description" content="Escolha o serviço, o profissional e o horário. Agende seu corte online na Garagem 110." />
+  <meta property="og:url" content="https://www.garagem110.com.br/agendamento.html" />
+  <meta property="og:image" content="https://www.garagem110.com.br/img/logo.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/png" href="img/logo.png" />
+  <link rel="apple-touch-icon" href="img/logo.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="agendamento.css" />
+</head>
+<body>
+
+  <!-- Link de salto para acessibilidade -->
+  <a href="#conteudo" class="skip-link">Ir para o conteúdo principal</a>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo" aria-label="Barbearia Garagem 110 — página inicial">
+        <img src="img/logo.png" alt="Barbearia Garagem 110" class="logo__img" />
+      </a>
+
+      <nav class="nav" id="nav" aria-label="Navegação principal">
+        <a href="index.html" class="nav__link">Início</a>
+        <a href="index.html#servicos" class="nav__link">Serviços</a>
+        <a href="index.html#horarios" class="nav__link">Horários</a>
+        <a href="index.html#contato" class="nav__link">Contato</a>
+        <a href="#meus-agendamentos" class="btn btn--primary nav__cta">Meus agendamentos</a>
+      </nav>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="conteudo">
+
+  <!-- ============ HERO (compacto) ============ -->
+  <section class="page-hero" id="inicio">
+    <div class="container page-hero__inner">
+      <p class="page-hero__tag reveal">✂ Agendamento online</p>
+      <h1 class="page-hero__title reveal">Marque seu <span class="accent">horário</span></h1>
+      <p class="page-hero__sub reveal">
+        Escolha os serviços, veja o valor na hora, selecione o profissional e o melhor dia.
+        É rápido e sem cadastro.
+      </p>
+      <ul class="page-hero__steps reveal" aria-hidden="true">
+        <li><strong>1</strong> Serviços</li>
+        <li><strong>2</strong> Profissional</li>
+        <li><strong>3</strong> Data e hora</li>
+        <li><strong>4</strong> Confirmação</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ AGENDAMENTO ============ -->
+  <section class="section booking" id="agendar" aria-label="Formulário de agendamento">
+    <div class="container">
+      <div class="booking__grid">
+
+        <!-- ------- Coluna principal (passos) ------- -->
+        <div class="booking__main">
+
+          <!-- Passo 1 — Serviços -->
+          <section class="step" aria-labelledby="step1">
+            <div class="step__head">
+              <span class="step__num" aria-hidden="true">1</span>
+              <div>
+                <h2 class="step__title" id="step1">Escolha os serviços</h2>
+                <p class="step__sub">Toque para selecionar. Pode escolher mais de um.</p>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <div class="chips" id="catChips" aria-label="Filtrar por categoria"></div>
+              <div class="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
+                <input id="svcSearch" type="search" placeholder="Buscar serviço…" aria-label="Buscar serviço" autocomplete="off" />
+              </div>
+            </div>
+
+            <div class="svc-grid" id="svcGrid" aria-live="polite"></div>
+            <p class="hint" id="svcEmpty" hidden>Nenhum serviço encontrado. Tente outra busca.</p>
+          </section>
+
+          <!-- Passo 2 — Profissional -->
+          <section class="step" aria-labelledby="step2">
+            <div class="step__head">
+              <span class="step__num" aria-hidden="true">2</span>
+              <div>
+                <h2 class="step__title" id="step2">Profissional</h2>
+                <p class="step__sub">Prefere um barbeiro específico? Escolha abaixo.</p>
+              </div>
+            </div>
+            <div class="pros" id="pros" role="radiogroup" aria-label="Escolha o profissional"></div>
+          </section>
+
+          <!-- Passo 3 — Data -->
+          <section class="step" aria-labelledby="step3">
+            <div class="step__head">
+              <span class="step__num" aria-hidden="true">3</span>
+              <div>
+                <h2 class="step__title" id="step3">Dia</h2>
+                <p class="step__sub">Fechamos domingos e segundas. Almoço das 12:00 às 13:30.</p>
+              </div>
+            </div>
+            <div class="days" id="days" role="group" aria-label="Escolha o dia"></div>
+          </section>
+
+          <!-- Passo 4 — Horário -->
+          <section class="step" aria-labelledby="step4">
+            <div class="step__head">
+              <span class="step__num" aria-hidden="true">4</span>
+              <div>
+                <h2 class="step__title" id="step4">Horário</h2>
+                <p class="step__sub">Horários já ocupados aparecem desativados.</p>
+              </div>
+            </div>
+            <div class="slots" id="slots" aria-live="polite"></div>
+            <p class="hint" id="slotsHint"></p>
+          </section>
+
+          <!-- Passo 5 — Dados -->
+          <section class="step" aria-labelledby="step5">
+            <div class="step__head">
+              <span class="step__num" aria-hidden="true">5</span>
+              <div>
+                <h2 class="step__title" id="step5">Seus dados</h2>
+                <p class="step__sub">Usamos apenas para confirmar o seu atendimento.</p>
+              </div>
+            </div>
+
+            <form class="form" id="clientForm" novalidate>
+              <div class="field">
+                <label for="nome">Nome completo <span class="req" aria-hidden="true">*</span></label>
+                <input id="nome" name="nome" type="text" required autocomplete="name" placeholder="Como podemos te chamar?" />
+              </div>
+              <div class="field">
+                <label for="telefone">WhatsApp / Telefone <span class="req" aria-hidden="true">*</span></label>
+                <input id="telefone" name="telefone" type="tel" required inputmode="numeric" autocomplete="tel" placeholder="(21) 90000-0000" maxlength="16" />
+              </div>
+              <div class="field field--full">
+                <label for="obs">Observação <span class="opt">(opcional)</span></label>
+                <textarea id="obs" name="obs" rows="2" placeholder="Ex.: gosto de degradê baixo, referência de foto, etc."></textarea>
+              </div>
+            </form>
+          </section>
+
+        </div>
+
+        <!-- ------- Coluna do resumo ------- -->
+        <aside class="booking__aside" aria-label="Resumo do agendamento">
+          <div class="summary">
+            <h2 class="summary__title">Resumo</h2>
+
+            <ul class="summary__list" id="sumServices"></ul>
+
+            <div class="summary__rows">
+              <div class="summary__row"><span>Duração</span><strong id="sumDur">—</strong></div>
+              <div class="summary__row"><span>Profissional</span><strong id="sumPro">—</strong></div>
+              <div class="summary__row"><span>Dia</span><strong id="sumDate">—</strong></div>
+              <div class="summary__row"><span>Horário</span><strong id="sumTime">—</strong></div>
+            </div>
+
+            <div class="summary__total">
+              <span>Total</span>
+              <strong id="sumTotal">R$ 0</strong>
+            </div>
+
+            <button class="btn btn--primary summary__btn" id="confirmBtn" type="button">
+              Confirmar agendamento
+            </button>
+
+            <p class="summary__msg" id="sumMsg" role="status" aria-live="polite"></p>
+            <p class="summary__note">O pagamento é feito na barbearia. Valores sujeitos a alteração.</p>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MEUS AGENDAMENTOS ============ -->
+  <section class="section mybooking" id="meus-agendamentos" aria-label="Meus agendamentos">
+    <div class="container">
+      <div class="section__head reveal">
+        <span class="section__eyebrow">Sua agenda</span>
+        <h2 class="section__title">Meus <span class="accent">agendamentos</span></h2>
+        <p class="section__lead">Os agendamentos feitos neste navegador ficam salvos aqui. Podem ser cancelados a qualquer momento.</p>
+      </div>
+
+      <div class="bk-list" id="myList" aria-live="polite"></div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="index.html" class="logo logo--footer">
+        <img src="img/logo.png" alt="Barbearia Garagem 110" class="logo__img logo__img--footer" />
+      </a>
+      <p class="footer__slogan">“Uma nova experiência para uma antiga tradição.”<br>Há mais de 10 anos oferecendo compromisso e qualidade.</p>
+      <p class="footer__info">Rua Santo Sigfrido, 110 — Campo Grande, Rio de Janeiro/RJ &nbsp;•&nbsp; (21) 97018-9712</p>
+      <p class="footer__copy">© <span id="ano"></span> Garagem 110. Todos os direitos reservados.</p>
+      <p class="footer__credit">Site orquestrado por <a href="https://linktr.ee/mateusmarrero" target="_blank" rel="noopener">Mateus Marrero</a></p>
+    </div>
+  </footer>
+
+  <!-- ============ MODAL DE SUCESSO ============ -->
+  <div class="modal" id="successModal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+      <button class="modal__x" type="button" data-close aria-label="Fechar">&times;</button>
+      <div class="modal__icon" aria-hidden="true">✅</div>
+      <h2 class="modal__title" id="successTitle">Agendamento confirmado!</h2>
+      <div class="modal__body" id="successDetails"></div>
+      <div class="modal__actions">
+        <a class="btn btn--primary" id="waBtn" href="#" target="_blank" rel="noopener">Confirmar no WhatsApp</a>
+        <button class="btn btn--ghost" id="icsBtn" type="button">Salvar na agenda</button>
+        <button class="btn btn--ghost" type="button" data-close>Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ACESSIBILIDADE ============ -->
+  <button class="a11y-toggle" id="a11yToggle" type="button" aria-label="Abrir opções de acessibilidade" aria-expanded="false" aria-controls="a11yPanel">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="4.5" r="2"/>
+      <path d="M20 8.5H4a1 1 0 0 0 0 2h1.8l-1.3 8.6a1 1 0 0 0 2 .3L8 11.5h8l1.5 7.9a1 1 0 0 0 2-.3L18.2 10.5H20a1 1 0 0 0 0-2z"/>
+    </svg>
+    <span class="a11y-toggle__label">Acessibilidade</span>
+  </button>
+
+  <div class="a11y-panel" id="a11yPanel" role="region" aria-label="Opções de acessibilidade" hidden>
+    <div class="a11y-panel__head">
+      <h2 class="a11y-panel__title">Acessibilidade</h2>
+      <button class="a11y-close" id="a11yClose" type="button" aria-label="Fechar opções de acessibilidade">&times;</button>
+    </div>
+    <div class="a11y-options">
+      <button class="a11y-opt" type="button" data-a11y="font-up" aria-label="Aumentar tamanho da fonte">A+</button>
+      <button class="a11y-opt" type="button" data-a11y="font-down" aria-label="Diminuir tamanho da fonte">A−</button>
+      <button class="a11y-opt" type="button" data-a11y="contrast" aria-pressed="false">Alto contraste</button>
+      <button class="a11y-opt" type="button" data-a11y="links" aria-pressed="false">Destacar links</button>
+      <button class="a11y-opt a11y-opt--reset" type="button" data-a11y="reset">Restaurar padrão</button>
+    </div>
+  </div>
+
+  <!-- Botão flutuante WhatsApp -->
+  <a href="https://wa.me/5521970189712" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Falar no WhatsApp">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-4.9 1 1-4.8-.3-.4a9.7 9.7 0 0 1-1.5-5.1c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.1 10.9-8.5 10.9zm5.4-7.3c-.3-.1-1.7-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.2-.3.2-.7.1c-.3-.1-1.3-.5-2.5-1.6-.9-.8-1.5-1.8-1.7-2.1s0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5c-.1-.1-.7-1.6-.9-2.2s-.5-.5-.6-.5h-.6c-.2 0-.5.1-.8.4s-1 1-1 2.5 1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5 4.5.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 2-1.4s.3-1.3.2-1.4c-.1-.1-.3-.2-.6-.3z"/></svg>
+  </a>
+
+  <script src="script.js"></script>
+  <script src="agendamento.js"></script>
+</body>
+</html>

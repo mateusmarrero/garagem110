@@ -10,6 +10,9 @@ Landing page com visual **urbano/street**, feita em HTML, CSS e JavaScript puros
 | `index.html`  | A página do site               |
 | `styles.css`  | Todo o visual (cores, fontes)  |
 | `script.js`   | Menu mobile e animações        |
+| `agendamento.html` | **Sistema de agendamento** (catálogo + marcação de horário) |
+| `agendamento.css`  | Visual exclusivo do agendamento |
+| `agendamento.js`   | Lógica do agendamento (serviços, horários, salvamento) |
 | `img/logo.png`| O logotipo (fundo transparente)|
 
 ## Como visualizar
@@ -35,13 +38,64 @@ Clique duas vezes em `index.html` — ele abre no navegador.
 Site **orquestrado por Mateus Marrero** — https://linktr.ee/mateusmarrero
 (O crédito aparece no rodapé e direciona para o Linktree.)
 
-## 🔗 Agendamento
+## 🔗 Agendamento (sistema próprio)
 
-Todos os botões "Agendar online" apontam para o site de agendamento
-**https://sites.appbarber.com.br/barbeariagarage-dxip** (AppBarber).
+O site tem um **sistema de agendamento próprio** em `agendamento.html`.
+Todos os botões "Agendar online" do site apontam para ele.
 
-Para trocar esse link, use "Localizar e Substituir" no `index.html` procurando por
-`sites.appbarber.com.br/barbeariagarage-dxip`.
+O cliente escolhe:
+
+1. **Serviços** (catálogo com preço e duração) — pode marcar mais de um;
+2. **Profissional** (ou "Sem preferência" — o sistema atribui quem estiver livre);
+3. **Dia** (só aparecem os dias com vaga; domingo e segunda são bloqueados);
+4. **Horário** (ocupados aparecem desativados; o almoço das 12:00–13:30 não é oferecido);
+5. **Dados** (nome e WhatsApp) e confirma.
+
+Ao confirmar:
+
+- o agendamento fica salvo **no próprio navegador** (localStorage) e aparece em
+  **"Meus agendamentos"** (com opção de cancelar);
+- abre um resumo com botões para **enviar a confirmação pelo WhatsApp** e
+  **salvar na agenda do celular** (arquivo `.ics`).
+
+> ⚠️ Como é **front-end puro**, os agendamentos ficam salvos apenas no navegador
+> do cliente (não há servidor/banco de dados). A confirmação chega na barbearia
+> pelo **WhatsApp**. Isso evita custos de hospedagem e funciona em qualquer
+> Netlify/Vercel/GitHub Pages.
+
+## 🗓️ Editar o agendamento
+
+Tudo fica em `agendamento.js`, no bloco **"1) CONFIGURAÇÃO"**:
+
+- **`WHATSAPP`** — número que recebe as confirmações (só dígitos, com `55`).
+- **`SERVICOS`** — catálogo (nome, descrição, `preco` e `duracao` em minutos):
+  ```js
+  { id: "corte-disfarcado", cat: "Cabelo", icon: "✂️",
+    nome: "Corte Disfarçado", desc: "Degradê bem feito...",
+    preco: 30, duracao: 30 },
+  ```
+- **`BARBEIROS`** — equipe. Troque os nomes; `"any"` é o "Sem preferência":
+  ```js
+  var BARBEIROS = [
+    { id: "any",    nome: "Sem preferência" },
+    { id: "wesley", nome: "Wesley" }
+  ];
+  ```
+- **`HORARIOS`** — funcionamento por dia da semana (`0`=Dom … `6`=Sáb).
+  Use `null` para dia fechado:
+  ```js
+  var HORARIOS = {
+    0: null, 1: null,
+    2: { abre: "09:00", fecha: "19:00" }, // Terça
+    5: { abre: "09:00", fecha: "19:30" }, // Sexta
+    6: { abre: "09:00", fecha: "20:00" }  // Sábado
+  };
+  ```
+- **`ALMOCO`**, **`INTERVALO`** (de quantos em quantos minutos são os horários),
+  **`DIAS_VISIVEIS`** (quantos dias aparecem) e **`BUFFER`** (antecedência mínima).
+
+> Para apontar os botões de volta para o AppBarber, troque `agendamento.html`
+> por `https://sites.appbarber.com.br/barbeariagarage-dxip` no `index.html`.
 
 ## 🖼️ Fotos
 
@@ -56,8 +110,21 @@ As fotos reais já estão em `img/` e aplicadas no site:
 | `dentro.png` | Galeria |
 
 Para trocar/atualizar uma foto, é só substituir o arquivo em `img/` mantendo o mesmo nome.
-Para adicionar mais fotos na galeria, copie um `<figure class="gallery__item">` no `index.html`
-e aponte o `src` para a nova imagem — o layout se ajusta sozinho (3, 2 ou 1 coluna conforme a tela).
+
+### Carrossel da galeria
+
+As fotos da seção `#galeria` ficam num **carrossel**. Para adicionar uma imagem,
+copie um `<li class="carousel__slide">` dentro de `.carousel__track` no `index.html`
+e aponte o `src` para a nova imagem — os **pontinhos e setas se ajustam sozinhos**
+(o JavaScript conta os slides automaticamente).
+
+> Ao adicionar/remover fotos, atualize também o `aria-label` de cada slide
+> ("1 de 6", "2 de 6"…) para manter a acessibilidade correta.
+
+Recursos do carrossel: setas **anterior/próxima**, **pontinhos** clicáveis,
+**arrastar com o dedo** no celular, navegação por **teclado** (setas ← →) e
+**apresentação automática** que pausa ao passar o mouse/focar e pode ser
+interrompida no botão **play/pause**. Tudo respeita "reduzir movimento" do sistema.
 
 ## ✏️ Editar serviços e preços
 
