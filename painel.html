@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Barbeiro | Barbearia Garagem 110</title>
+  <meta name="description" content="Painel interno com a agenda de atendimentos da Barbearia Garagem 110, organizada por dia e por profissional." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0b0b0d" />
+  <link rel="icon" type="image/png" href="img/logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+/* =========================================================
+   GARAGEM 110 — Agenda do barbeiro
+   Complementa o styles.css (mesmas cores/variáveis)
+   ========================================================= */
+
+/* ---------- Tela de acesso (PIN) ---------- */
+.lock {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--header-h) + 40px) 20px 80px;
+  overflow: hidden;
+}
+.lock__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(11,11,13,0.9), var(--preto)),
+    radial-gradient(50% 50% at 50% 0%, rgba(245,197,24,0.16), transparent 70%);
+}
+.lock__box {
+  width: min(420px, 100%);
+  background: var(--preto-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+}
+.lock__icon { font-size: 2.6rem; margin-bottom: 10px; }
+.lock__eyebrow {
+  font-family: var(--fonte-sub);
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--amarelo);
+}
+.lock__title {
+  font-family: var(--fonte-titulo);
+  font-size: 2.2rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: 6px;
+}
+.lock__sub { color: var(--cinza); font-size: 0.9rem; margin-top: 10px; }
+.lock__pinwrap { position: relative; margin-top: 22px; }
+.lock__pin {
+  width: 100%;
+  padding: 16px 52px 16px 16px;
+  text-align: center;
+  letter-spacing: 6px;
+  font-family: var(--fonte-sub);
+  font-size: 1.4rem;
+  background: var(--preto-3);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  color: var(--branco);
+}
+.lock__pin:focus { outline: none; border-color: var(--amarelo); box-shadow: 0 0 0 3px rgba(245,197,24,0.2); }
+.lock__show {
+  position: absolute;
+  right: 8px; top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 8px;
+  opacity: 0.7;
+  filter: grayscale(1);
+}
+.lock__show:hover, .lock__show[aria-pressed="true"] { opacity: 1; filter: none; }
+.lock__msg { color: var(--vermelho); font-size: 0.84rem; min-height: 1.2em; margin-top: 10px; }
+.lock__btn { width: 100%; margin-top: 8px; }
+.lock__hint { color: var(--cinza); font-size: 0.72rem; margin-top: 16px; line-height: 1.5; }
+.lock__hint code { color: var(--amarelo); }
+.lock__status {
+  font-family: var(--fonte-sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.68rem;
+  color: var(--cinza);
+  margin-top: 14px;
+}
+
+/* ---------- Painel ---------- */
+.dash { padding: calc(var(--header-h) + 40px) 0 90px; }
+
+.dash__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.dash__eyebrow {
+  font-family: var(--fonte-sub);
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--amarelo);
+}
+.dash__title {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+.dash__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.dash__actions .btn { padding: 10px 18px; font-size: 0.8rem; }
+
+/* Barra de data */
+.datebar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: var(--preto-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 12px 14px;
+  margin-bottom: 20px;
+}
+.datebar__nav { display: flex; align-items: center; gap: 8px; }
+.datebar__arrow {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--borda);
+  background: var(--preto-3);
+  color: var(--branco);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+.datebar__arrow:hover { border-color: var(--amarelo); color: var(--amarelo); }
+.datebar__today { padding: 10px 18px; font-size: 0.82rem; }
+.datebar__date {
+  background: var(--preto-3);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--branco);
+  font: inherit;
+  font-size: 0.9rem;
+  color-scheme: dark;
+}
+.viewtabs { display: inline-flex; background: var(--preto-3); border: 1px solid var(--borda); border-radius: 40px; padding: 4px; }
+.viewtab {
+  border: 0;
+  background: transparent;
+  color: var(--cinza);
+  font-family: var(--fonte-sub);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.76rem;
+  padding: 9px 20px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.viewtab.is-active { background: var(--amarelo); color: var(--preto); }
+
+/* KPIs */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.kpi {
+  background: var(--preto-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 16px 18px;
+}
+.kpi__label {
+  display: block;
+  font-family: var(--fonte-sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.7rem;
+  color: var(--cinza);
+  margin-bottom: 6px;
+}
+.kpi__value {
+  font-family: var(--fonte-titulo);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--amarelo);
+}
+.kpi--green .kpi__value { color: #4ade80; }
+.kpi--plain .kpi__value { color: var(--branco); }
+
+/* Filtros */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  background: var(--preto-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.filters__field { display: flex; flex-direction: column; gap: 6px; }
+.filters__field > span {
+  font-family: var(--fonte-sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.7rem;
+  color: var(--cinza);
+}
+.filters__field select,
+.filters__field input {
+  background: var(--preto-3);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--branco);
+  font: inherit;
+  font-size: 0.9rem;
+  min-width: 180px;
+  color-scheme: dark;
+}
+.filters__field input:focus,
+.filters__field select:focus { outline: none; border-color: var(--amarelo); }
+.filters__search { flex: 1 1 220px; }
+.filters__search input { width: 100%; min-width: 0; }
+.filters__status { display: flex; flex-wrap: wrap; gap: 8px; }
+.statchip {
+  border: 1px solid var(--borda);
+  background: var(--preto-3);
+  color: var(--cinza);
+  font-family: var(--fonte-sub);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.7rem;
+  padding: 9px 14px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+.statchip:hover { border-color: var(--amarelo); color: var(--branco); }
+.statchip.is-active { background: var(--amarelo); border-color: var(--amarelo); color: var(--preto); }
+
+/* Lista / timeline */
+.agenda { display: flex; flex-direction: column; gap: 26px; }
+
+.ag-day__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.ag-day__title {
+  font-family: var(--fonte-titulo);
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.ag-day__count {
+  font-family: var(--fonte-sub);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--preto);
+  background: var(--amarelo);
+  padding: 3px 10px;
+  border-radius: 40px;
+}
+.ag-day__revenue { margin-left: auto; color: var(--cinza); font-size: 0.85rem; }
+.ag-day__revenue b { color: var(--amarelo); font-family: var(--fonte-titulo); font-size: 1.1rem; }
+
+.ag-list { display: flex; flex-direction: column; gap: 12px; }
+
+.appt {
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  gap: 16px;
+  align-items: stretch;
+  background: var(--preto-2);
+  border: 1px solid var(--borda);
+  border-left: 4px solid var(--amarelo);
+  border-radius: 12px;
+  padding: 16px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.appt:hover { box-shadow: 0 14px 34px rgba(0,0,0,0.35); }
+
+.appt__time {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid var(--borda);
+  padding-right: 12px;
+}
+.appt__hour {
+  font-family: var(--fonte-titulo);
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--amarelo);
+}
+.appt__dur {
+  font-size: 0.7rem;
+  color: var(--cinza);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.appt__body { min-width: 0; }
+.appt__name {
+  font-family: var(--fonte-sub);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 1.05rem;
+}
+.appt__svcs { font-size: 0.9rem; margin-top: 4px; }
+.appt__meta { color: var(--cinza); font-size: 0.82rem; margin-top: 6px; line-height: 1.6; }
+.appt__meta b { color: var(--branco); font-weight: 600; }
+.appt__obs {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: #d4d4d8;
+  background: rgba(255,255,255,0.04);
+  border-left: 2px solid var(--amarelo);
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+.appt__pro {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--fonte-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.7rem;
+  color: var(--amarelo);
+}
+.appt__pro::before { content: "•"; }
+
+.appt__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  min-width: 170px;
+}
+.appt__price { font-family: var(--fonte-titulo); font-size: 1.5rem; color: var(--branco); line-height: 1; }
+.appt__badge {
+  font-family: var(--fonte-sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.66rem;
+  padding: 4px 12px;
+  border-radius: 40px;
+  white-space: nowrap;
+}
+.appt__actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.appt__actions .btn { padding: 8px 12px; font-size: 0.72rem; }
+.appt__wa { color: #4ade80; border-color: rgba(74, 222, 128, 0.5); background: transparent; }
+.appt__wa:hover { background: rgba(74, 222, 128, 0.12); color: #4ade80; border-color: #4ade80; transform: none; }
+.appt__btn--done { color: #4ade80; border-color: rgba(74,222,128,0.5); background: transparent; }
+.appt__btn--done:hover { background: rgba(74,222,128,0.12); color: #4ade80; border-color: #4ade80; transform: none; }
+.appt__btn--no { color: #fbbf24; border-color: rgba(251,191,36,0.5); background: transparent; }
+.appt__btn--no:hover { background: rgba(251,191,36,0.12); color: #fbbf24; border-color: #fbbf24; transform: none; }
+.appt__btn--cancel { color: var(--vermelho); border-color: rgba(230,57,70,0.5); background: transparent; }
+.appt__btn--cancel:hover { background: rgba(230,57,70,0.12); color: var(--vermelho); border-color: var(--vermelho); transform: none; }
+.appt__btn--reset { color: var(--cinza); border-color: var(--borda); background: transparent; }
+.appt__btn--reset:hover { color: var(--branco); border-color: var(--branco); transform: none; }
+
+/* Cores por status */
+.appt--confirmado { border-left-color: var(--amarelo); }
+.appt--confirmado .appt__badge { background: rgba(245,197,24,0.16); color: var(--amarelo); }
+.appt--concluido { border-left-color: #4ade80; }
+.appt--concluido .appt__badge { background: rgba(74,222,128,0.16); color: #4ade80; }
+.appt--faltou { border-left-color: #fbbf24; }
+.appt--faltou .appt__badge { background: rgba(251,191,36,0.16); color: #fbbf24; }
+.appt--cancelado { border-left-color: var(--cinza); opacity: 0.6; }
+.appt--cancelado .appt__badge { background: rgba(255,255,255,0.09); color: var(--cinza); }
+.appt--cancelado .appt__hour { color: var(--cinza); text-decoration: line-through; }
+
+/* Estado vazio */
+.ag-empty {
+  background: var(--preto-3);
+  border: 1px dashed var(--borda);
+  border-radius: var(--raio);
+  padding: 54px 24px;
+  text-align: center;
+  color: var(--cinza);
+}
+.ag-empty span { display: block; font-size: 2.4rem; margin-bottom: 10px; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 992px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .appt { grid-template-columns: 1fr; gap: 12px; }
+  .appt__time {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--borda);
+    padding: 0 0 10px;
+  }
+  .appt__side { align-items: flex-start; min-width: 0; }
+  .appt__actions { justify-content: flex-start; }
+  .filters__field select,
+  .filters__field input { min-width: 0; width: 100%; }
+  .filters__field { flex: 1 1 160px; }
+}
+@media (max-width: 480px) {
+  .kpis { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi { padding: 13px 14px; }
+  .kpi__value { font-size: 1.6rem; }
+  .datebar__date { width: 100%; }
+}
+
+/* ---------- Impressão ---------- */
+@media print {
+  .header, .footer, .a11y-toggle, .a11y-panel, .dash__actions,
+  .viewtabs, .filters, .datebar__nav, .appt__actions, .skip-link { display: none !important; }
+  body { background: #fff; color: #000; }
+  .dash { padding: 0; }
+  .kpi, .appt, .ag-empty { border-color: #bbb; background: #fff; color: #000; box-shadow: none; }
+  .kpi__value, .appt__hour, .appt__price, .ag-day__revenue b { color: #000 !important; }
+  .appt__badge { border: 1px solid #000; color: #000 !important; background: #fff !important; }
+  .appt__name, .appt__meta b { color: #000; }
+  .appt { break-inside: avoid; }
+}
+
+</style>
+</head>
+<body>
+
+  <a href="#conteudo" class="skip-link">Ir para o conteúdo principal</a>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header is-scrolled" id="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo" aria-label="Barbearia Garagem 110 — página inicial">
+        <img src="img/logo.png" alt="Barbearia Garagem 110" class="logo__img" />
+      </a>
+
+      <nav class="nav" id="nav" aria-label="Navegação principal">
+        <a href="index.html" class="nav__link">Início</a>
+        <a href="agendamento.html" class="nav__link">Agendar</a>
+        <a href="index.html#horarios" class="nav__link">Horários</a>
+        <a href="index.html#contato" class="nav__link">Contato</a>
+        <button class="btn btn--ghost nav__cta" id="lockBtn" type="button" hidden>Bloquear</button>
+      </nav>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="conteudo">
+
+  <!-- ============ TELA DE ACESSO (PIN) ============ -->
+  <section class="lock" id="lock">
+    <div class="lock__bg" aria-hidden="true"></div>
+    <form class="lock__box" id="lockForm" autocomplete="off">
+      <div class="lock__icon" aria-hidden="true">🔒</div>
+      <p class="lock__eyebrow">Área do barbeiro</p>
+      <h1 class="lock__title">Agenda de atendimentos</h1>
+      <p class="lock__sub">Digite o PIN para acessar os agendamentos.</p>
+
+      <label class="sr-only" for="pin">PIN de acesso</label>
+      <div class="lock__pinwrap">
+        <input id="pin" class="lock__pin" type="password" autocomplete="off"
+               placeholder="Digite o PIN" maxlength="24" aria-describedby="lockMsg" />
+        <button class="lock__show" id="pinToggle" type="button" aria-label="Mostrar PIN" aria-pressed="false">👁</button>
+      </div>
+      <p class="lock__msg" id="lockMsg" role="alert" aria-live="assertive"></p>
+
+      <button class="btn btn--primary lock__btn" type="submit">Entrar</button>
+      <p class="lock__hint">O PIN fica no arquivo <code>agenda.js</code> (variável <code>PIN</code>). Ao alterá-lo, recarregue a página com <strong>Ctrl+F5</strong> (ou Ctrl+Shift+R) para o navegador não usar a versão antiga em cache.</p>
+      <p class="lock__status" id="lockStatus">Carregando o sistema…</p>
+    </form>
+  </section>
+
+  <!-- ============ PAINEL ============ -->
+  <section class="dash" id="dash" hidden>
+    <div class="container">
+
+      <div class="dash__top">
+        <div>
+          <p class="dash__eyebrow">Área do barbeiro</p>
+          <h2 class="dash__title">Agenda</h2>
+        </div>
+        <div class="dash__actions">
+          <button class="btn btn--ghost" id="csvBtn" type="button">Exportar CSV</button>
+          <button class="btn btn--ghost" id="printBtn" type="button">Imprimir</button>
+        </div>
+      </div>
+
+      <div class="datebar">
+        <div class="datebar__nav">
+          <button class="datebar__arrow" id="prevDay" type="button" aria-label="Dia anterior">‹</button>
+          <button class="btn btn--primary datebar__today" id="todayBtn" type="button">Hoje</button>
+          <button class="datebar__arrow" id="nextDay" type="button" aria-label="Próximo dia">›</button>
+          <input class="datebar__date" id="datePick" type="date" aria-label="Escolher a data" />
+        </div>
+        <div class="viewtabs" role="tablist" aria-label="Modo de visualização">
+          <button class="viewtab is-active" data-view="dia" role="tab" aria-selected="true" type="button">Dia</button>
+          <button class="viewtab" data-view="proximos" role="tab" aria-selected="false" type="button">Próximos</button>
+        </div>
+      </div>
+
+      <div class="kpis" id="kpis"></div>
+
+      <div class="filters">
+        <label class="filters__field">
+          <span>Profissional</span>
+          <select id="fPro">
+            <option value="todos">Todos</option>
+          </select>
+        </label>
+        <div class="filters__status" id="fStatus" aria-label="Filtrar por status"></div>
+        <label class="filters__field filters__search">
+          <span>Buscar</span>
+          <input id="fSearch" type="search" placeholder="Nome, telefone ou serviço…" autocomplete="off" />
+        </label>
+      </div>
+
+      <div class="agenda" id="agendaBody" aria-live="polite"></div>
+
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p class="footer__slogan">Painel interno — Barbearia Garagem 110</p>
+      <p class="footer__info">Rua Santo Sigfrido, 110 — Campo Grande, Rio de Janeiro/RJ &nbsp;•&nbsp; (21) 97018-9712</p>
+      <p class="footer__copy">© <span id="ano"></span> Garagem 110. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- ============ ACESSIBILIDADE ============ -->
+  <button class="a11y-toggle" id="a11yToggle" type="button" aria-label="Abrir opções de acessibilidade" aria-expanded="false" aria-controls="a11yPanel">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="4.5" r="2"/>
+      <path d="M20 8.5H4a1 1 0 0 0 0 2h1.8l-1.3 8.6a1 1 0 0 0 2 .3L8 11.5h8l1.5 7.9a1 1 0 0 0 2-.3L18.2 10.5H20a1 1 0 0 0 0-2z"/>
+    </svg>
+    <span class="a11y-toggle__label">Acessibilidade</span>
+  </button>
+
+  <div class="a11y-panel" id="a11yPanel" role="region" aria-label="Opções de acessibilidade" hidden>
+    <div class="a11y-panel__head">
+      <h2 class="a11y-panel__title">Acessibilidade</h2>
+      <button class="a11y-close" id="a11yClose" type="button" aria-label="Fechar opções de acessibilidade">&times;</button>
+    </div>
+    <div class="a11y-options">
+      <button class="a11y-opt" type="button" data-a11y="font-up" aria-label="Aumentar tamanho da fonte">A+</button>
+      <button class="a11y-opt" type="button" data-a11y="font-down" aria-label="Diminuir tamanho da fonte">A−</button>
+      <button class="a11y-opt" type="button" data-a11y="contrast" aria-pressed="false">Alto contraste</button>
+      <button class="a11y-opt" type="button" data-a11y="links" aria-pressed="false">Destacar links</button>
+      <button class="a11y-opt a11y-opt--reset" type="button" data-a11y="reset">Restaurar padrão</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <!-- Diagnóstico: mostra na tela qualquer erro de JavaScript -->
+  <script>
+    window.addEventListener("error", function (ev) {
+      var m = document.getElementById("lockMsg");
+      if (m && !m.textContent) m.textContent = "Erro ao carregar: " + (ev.message || "falha") + " — recarregue com Ctrl+F5.";
+    });
+  </script>
+
+  <script>
+/* =========================================================
+   GARAGEM 110 — Agenda do barbeiro
+   Lê os agendamentos salvos no mesmo dispositivo (localStorage)
+   e organiza por dia e por profissional. Acesso protegido por PIN.
+   ========================================================= */
+
+(function () {
+  "use strict";
+
+  // Evita inicializar duas vezes caso o script seja carregado em dobro
+  if (window.__agendaCarregado) return;
+  window.__agendaCarregado = true;
+
+  /* =========================================================
+     1) CONFIGURAÇÃO  (edite aqui)
+     ========================================================= */
+
+  var PIN = "110110";                 // <-- troque pelo PIN da equipe
+  var STORAGE_KEY = "garagem110-agendamentos";
+  var DIAS_PROXIMOS = 45;             // alcance da aba "Próximos" (dias)
+
+  // Mesma URL do Web App do Google Apps Script usada no agendamento.js.
+  // Veja google-agenda/COMO-CONFIGURAR.md. Deixe "" para usar só o aparelho.
+  var API_URL = "";
+
+  /* =========================================================
+     2) HELPERS
+     ========================================================= */
+
+  var DIAS_SEMANA = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+  var DIAS_CURTOS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  var MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
+  function $(s, c) { return (c || document).querySelector(s); }
+  function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function toMin(hhmm) {
+    var p = String(hhmm).split(":");
+    return parseInt(p[0], 10) * 60 + parseInt(p[1], 10);
+  }
+  function isoOf(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function parseISO(iso) {
+    var p = iso.split("-");
+    return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+  }
+  function hojeISO() { return isoOf(new Date()); }
+  function fmtPreco(n) { return "R$ " + n; }
+  function fmtDur(min) {
+    if (min < 60) return min + " min";
+    var h = Math.floor(min / 60), m = min % 60;
+    return h + "h" + (m ? pad(m) : "");
+  }
+  function fmtDataLonga(iso) {
+    var d = parseISO(iso);
+    return DIAS_SEMANA[d.getDay()] + ", " + pad(d.getDate()) + " de " + MESES[d.getMonth()];
+  }
+  function dtDe(ag) {
+    var d = parseISO(ag.data);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), Math.floor(toMin(ag.hora) / 60), toMin(ag.hora) % 60);
+  }
+
+  var STATUS = {
+    confirmado: { label: "Confirmado", cls: "appt--confirmado" },
+    concluido:  { label: "Concluído",  cls: "appt--concluido" },
+    faltou:     { label: "Faltou",     cls: "appt--faltou" },
+    cancelado:  { label: "Cancelado",  cls: "appt--cancelado" }
+  };
+  function statusDe(ag) { return STATUS[ag.status] ? ag.status : "confirmado"; }
+
+  // Compara PINs ignorando maiúsculas/minúsculas e espaços nas pontas.
+  // Aceita tanto texto ("joao110") quanto número (110110) na configuração.
+  function normalizarPin(v) {
+    return String(v == null ? "" : v).trim().toUpperCase();
+  }
+
+  /* =========================================================
+     3) DADOS
+     ========================================================= */
+
+  var agendamentos = [];
+
+  function carregar() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      agendamentos = (Array.isArray(arr) ? arr : []).map(function (a) {
+        if (!a.status) a.status = "confirmado";
+        if (typeof a.total !== "number") a.total = 0;
+        if (typeof a.duracao !== "number") a.duracao = 30;
+        return a;
+      });
+    } catch (e) { agendamentos = []; }
+  }
+  function salvar() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(agendamentos)); } catch (e) {}
+  }
+
+  /* =========================================================
+     3b) NUVEM (Google Sheets + Google Calendar via Apps Script)
+     ========================================================= */
+
+  function apiAtiva() { return !!API_URL; }
+
+  function normalizarLista(arr) {
+    return (Array.isArray(arr) ? arr : []).map(function (a) {
+      if (!a.status) a.status = "confirmado";
+      if (typeof a.total !== "number") a.total = Number(a.total) || 0;
+      if (typeof a.duracao !== "number") a.duracao = Number(a.duracao) || 30;
+      return a;
+    });
+  }
+
+  function apiCarregar() {
+    if (!apiAtiva()) return Promise.resolve();
+    return fetch(API_URL + "?action=agendamentos", { method: "GET" })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok && Array.isArray(res.agendamentos)) {
+          agendamentos = normalizarLista(res.agendamentos);
+        }
+      })
+      .catch(function () { /* offline: mantém o que já tinha */ });
+  }
+
+  function apiStatus(id, status) {
+    if (!apiAtiva()) return Promise.resolve({ ok: false });
+    return fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "status", id: id, status: status })
+    }).then(function (r) { return r.json(); }).catch(function () { return { ok: false }; });
+  }
+
+  /* =========================================================
+     4) ESTADO
+     ========================================================= */
+
+  var estado = {
+    view: "dia",                 // "dia" | "proximos"
+    data: hojeISO(),
+    pro: "todos",
+    status: "todos",
+    busca: ""
+  };
+
+  /* =========================================================
+     5) FILTROS
+     ========================================================= */
+
+  function passaFiltros(ag) {
+    if (estado.pro !== "todos" && ag.barbeiroNome !== estado.pro) return false;
+    if (estado.busca) {
+      var alvo = (ag.nome + " " + ag.telefone + " " + (ag.servicos || []).join(" ") + " " + (ag.obs || "")).toLowerCase();
+      if (alvo.indexOf(estado.busca.toLowerCase()) === -1) return false;
+    }
+    return true;
+  }
+  function porStatus(ag) {
+    return estado.status === "todos" || statusDe(ag) === estado.status;
+  }
+  function porHora(a, b) { return toMin(a.hora) - toMin(b.hora); }
+
+  // Itens que entram no cálculo dos KPIs e na listagem (sem o filtro de status)
+  function scopeItems() {
+    if (estado.view === "dia") {
+      return agendamentos.filter(function (a) { return a.data === estado.data && passaFiltros(a); }).sort(porHora);
+    }
+    // próximos: de hoje em diante
+    var hoje = hojeISO();
+    var limite = addDias(hoje, DIAS_PROXIMOS);
+    return agendamentos
+      .filter(function (a) { return a.data >= hoje && a.data <= limite && passaFiltros(a); })
+      .sort(function (a, b) { return (a.data + pad(toMin(a.hora))).localeCompare(b.data + pad(toMin(b.hora))); });
+  }
+  function addDias(iso, n) {
+    var d = parseISO(iso);
+    return isoOf(new Date(d.getFullYear(), d.getMonth(), d.getDate() + n));
+  }
+
+  /* =========================================================
+     6) RENDER — PROFISSIONAIS NO FILTRO
+     ========================================================= */
+
+  function renderProFiltro() {
+    var sel = $("#fPro");
+    if (!sel) return;
+    var set = {};
+    agendamentos.forEach(function (a) { if (a.barbeiroNome) set[a.barbeiroNome] = true; });
+    var nomes = Object.keys(set).sort(function (a, b) { return a.localeCompare(b); });
+    sel.innerHTML = '<option value="todos">Todos</option>' + nomes.map(function (n) {
+      return '<option value="' + esc(n) + '"' + (estado.pro === n ? " selected" : "") + ">" + esc(n) + "</option>";
+    }).join("");
+    sel.value = estado.pro;
+  }
+
+  function renderStatusFiltro() {
+    var wrap = $("#fStatus");
+    if (!wrap) return;
+    var opts = [["todos", "Todos"], ["confirmado", "Confirmados"], ["concluido", "Concluídos"], ["faltou", "Faltas"], ["cancelado", "Cancelados"]];
+    wrap.innerHTML = opts.map(function (o) {
+      var on = estado.status === o[0];
+      return '<button type="button" class="statchip' + (on ? " is-active" : "") + '" data-status="' + o[0] +
+        '" aria-pressed="' + (on ? "true" : "false") + '">' + o[1] + "</button>";
+    }).join("");
+  }
+
+  /* =========================================================
+     7) RENDER — KPIs
+     ========================================================= */
+
+  function renderKpis(items) {
+    var wrap = $("#kpis");
+    if (!wrap) return;
+    var ativos = items.filter(function (a) { return statusDe(a) !== "cancelado"; });
+    var total = items.length;
+    var receita = ativos.reduce(function (s, a) { return s + a.total; }, 0);
+    var minutos = ativos.reduce(function (s, a) { return s + a.duracao; }, 0);
+    var concluidos = items.filter(function (a) { return statusDe(a) === "concluido"; }).length;
+
+    var rotulo1 = estado.view === "dia" ? "Atendimentos do dia" : "Próximos atendimentos";
+    wrap.innerHTML =
+      kpi(rotulo1, total, "") +
+      kpi("Faturamento previsto", fmtPreco(receita), "kpi--green") +
+      kpi("Horas na cadeira", fmtDur(minutos), "kpi--plain") +
+      kpi("Concluídos", concluidos, "kpi--plain");
+  }
+  function kpi(label, value, cls) {
+    return '<div class="kpi ' + (cls || "") + '"><span class="kpi__label">' + label + '</span><span class="kpi__value">' + value + "</span></div>";
+  }
+
+  /* =========================================================
+     8) RENDER — LISTA / TIMELINE
+     ========================================================= */
+
+  function apptHTML(ag) {
+    var st = statusDe(ag);
+    var info = STATUS[st];
+    var servicos = (ag.servicos || []).join(", ");
+    var passado = dtDe(ag).getTime() < Date.now();
+
+    var acoes = [];
+    if (st !== "concluido") acoes.push('<button type="button" class="btn appt__btn--done" data-set="concluido" data-id="' + esc(ag.id) + '">Concluir</button>');
+    if (st !== "faltou") acoes.push('<button type="button" class="btn appt__btn--no" data-set="faltou" data-id="' + esc(ag.id) + '">Faltou</button>');
+    if (st !== "cancelado") acoes.push('<button type="button" class="btn appt__btn--cancel" data-set="cancelado" data-id="' + esc(ag.id) + '">Cancelar</button>');
+    if (st !== "confirmado") acoes.push('<button type="button" class="btn appt__btn--reset" data-set="confirmado" data-id="' + esc(ag.id) + '">Reabrir</button>');
+
+    var dig = (ag.telefone || "").replace(/\D/g, "");
+    var wa = "https://wa.me/" + (dig.length && dig.length <= 11 ? "55" + dig : dig);
+
+    return '<article class="appt ' + info.cls + (passado ? " appt--past" : "") + '">' +
+      '<div class="appt__time">' +
+        '<span class="appt__hour">' + esc(ag.hora) + "</span>" +
+        '<span class="appt__dur">' + fmtDur(ag.duracao) + "</span>" +
+      "</div>" +
+      '<div class="appt__body">' +
+        '<p class="appt__name">' + esc(ag.nome) + "</p>" +
+        '<p class="appt__svcs">💈 ' + esc(servicos) + "</p>" +
+        '<p class="appt__meta">' +
+          '<span class="appt__pro">' + esc(ag.barbeiroNome || "—") + "</span>" +
+          " &nbsp;•&nbsp; 📞 " + esc(ag.telefone || "—") +
+        "</p>" +
+        (ag.obs ? '<p class="appt__obs">📝 ' + esc(ag.obs) + "</p>" : "") +
+      "</div>" +
+      '<div class="appt__side">' +
+        '<span class="appt__price">' + fmtPreco(ag.total) + "</span>" +
+        '<span class="appt__badge">' + info.label + "</span>" +
+        '<div class="appt__actions">' +
+          (ag.telefone ? '<a class="btn appt__wa" href="' + esc(wa) + '" target="_blank" rel="noopener">WhatsApp</a>' : "") +
+          acoes.join("") +
+        "</div>" +
+      "</div>" +
+    "</article>";
+  }
+
+  function render() {
+    renderProFiltro();
+    var scope = scopeItems();
+    renderKpis(scope);
+
+    var body = $("#agendaBody");
+    if (!body) return;
+
+    var visiveis = scope.filter(porStatus);
+
+    if (!visiveis.length) {
+      body.innerHTML = '<div class="ag-empty"><span aria-hidden="true">🗓️</span>' +
+        (estado.view === "dia"
+          ? "Nenhum atendimento para " + fmtDataLonga(estado.data) + " com os filtros atuais."
+          : "Nenhum atendimento futuro com os filtros atuais.") +
+        "</div>";
+      return;
+    }
+
+    if (estado.view === "dia") {
+      var receita = scope.filter(function (a) { return statusDe(a) !== "cancelado"; })
+        .reduce(function (s, a) { return s + a.total; }, 0);
+      body.innerHTML =
+        '<div class="ag-day">' +
+          '<div class="ag-day__head">' +
+            '<h3 class="ag-day__title">' + esc(fmtDataLonga(estado.data)) + "</h3>" +
+            '<span class="ag-day__count">' + visiveis.length + (visiveis.length === 1 ? " atendimento" : " atendimentos") + "</span>" +
+            '<span class="ag-day__revenue">Previsto: <b>' + fmtPreco(receita) + "</b></span>" +
+          "</div>" +
+          '<div class="ag-list">' + visiveis.map(apptHTML).join("") + "</div>" +
+        "</div>";
+      return;
+    }
+
+    // Próximos: agrupa por dia
+    var grupos = {};
+    var ordem = [];
+    visiveis.forEach(function (a) {
+      if (!grupos[a.data]) { grupos[a.data] = []; ordem.push(a.data); }
+      grupos[a.data].push(a);
+    });
+    ordem.sort();
+
+    body.innerHTML = ordem.map(function (iso) {
+      var lista = grupos[iso].sort(porHora);
+      var receitaDia = lista.filter(function (a) { return statusDe(a) !== "cancelado"; })
+        .reduce(function (s, a) { return s + a.total; }, 0);
+      return '<div class="ag-day">' +
+        '<div class="ag-day__head">' +
+          '<h3 class="ag-day__title">' + esc(fmtDataLonga(iso)) + "</h3>" +
+          '<span class="ag-day__count">' + lista.length + "</span>" +
+          '<span class="ag-day__revenue">Previsto: <b>' + fmtPreco(receitaDia) + "</b></span>" +
+        "</div>" +
+        '<div class="ag-list">' + lista.map(apptHTML).join("") + "</div>" +
+      "</div>";
+    }).join("");
+  }
+
+  /* =========================================================
+     9) AÇÕES
+     ========================================================= */
+
+  function definirStatus(id, status) {
+    var mudou = false;
+    agendamentos.forEach(function (a) {
+      if (a.id === id) { a.status = status; mudou = true; }
+    });
+    if (!mudou) return;
+    salvar();
+    render();
+    if (apiAtiva()) apiStatus(id, status);
+  }
+
+  function exportarCSV() {
+    var items = scopeItems().filter(porStatus).sort(function (a, b) {
+      return (a.data + a.hora).localeCompare(b.data + b.hora);
+    });
+    var linhas = [["Data", "Hora", "Cliente", "Telefone", "Servicos", "Profissional", "Duracao", "Total", "Status", "Observacao"]];
+    items.forEach(function (a) {
+      linhas.push([
+        a.data, a.hora, a.nome, a.telefone, (a.servicos || []).join(" | "),
+        a.barbeiroNome || "", fmtDur(a.duracao), a.total, STATUS[statusDe(a)].label, a.obs || ""
+      ]);
+    });
+    var csv = "\uFEFF" + linhas.map(function (l) {
+      return l.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(";");
+    }).join("\r\n");
+
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "garagem110-agenda-" + (estado.view === "dia" ? estado.data : hojeISO()) + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  /* =========================================================
+     10) LOGIN
+     ========================================================= */
+
+  var CHAVE_SESSAO = "garagem110-agenda-unlocked";
+
+  function estaLiberado() {
+    try { return sessionStorage.getItem(CHAVE_SESSAO) === "1"; } catch (e) { return false; }
+  }
+  function liberar() {
+    try { sessionStorage.setItem(CHAVE_SESSAO, "1"); } catch (e) {}
+    mostrarPainel();
+  }
+  function bloquear() {
+    try { sessionStorage.removeItem(CHAVE_SESSAO); } catch (e) {}
+    $("#dash").hidden = true;
+    $("#lock").hidden = false;
+    $("#lockBtn").hidden = true;
+    var pin = $("#pin");
+    if (pin) { pin.value = ""; pin.focus(); }
+  }
+  function mostrarPainel() {
+    $("#lock").hidden = true;
+    $("#dash").hidden = false;
+    $("#lockBtn").hidden = false;
+    carregar();
+    render();
+    // Se a nuvem estiver configurada, busca os agendamentos reais
+    if (apiAtiva()) apiCarregar().then(render);
+  }
+
+  /* =========================================================
+     11) EVENTOS
+     ========================================================= */
+
+  function bind() {
+    // Login
+    var form = $("#lockForm");
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var pin = normalizarPin($("#pin").value);
+        if (pin !== "" && pin === normalizarPin(PIN)) { liberar(); }
+        else { $("#lockMsg").textContent = "PIN incorreto. Tente novamente."; $("#pin").select(); }
+      });
+    }
+    var lockBtn = $("#lockBtn");
+    if (lockBtn) lockBtn.addEventListener("click", bloquear);
+
+    // Mostrar/ocultar PIN
+    var pinToggle = $("#pinToggle");
+    if (pinToggle) {
+      pinToggle.addEventListener("click", function () {
+        var campo = $("#pin");
+        var mostrar = campo.type === "password";
+        campo.type = mostrar ? "text" : "password";
+        pinToggle.setAttribute("aria-pressed", mostrar ? "true" : "false");
+        pinToggle.setAttribute("aria-label", mostrar ? "Ocultar PIN" : "Mostrar PIN");
+        campo.focus();
+      });
+    }
+
+    // Navegação de data
+    var prev = $("#prevDay"), next = $("#nextDay"), today = $("#todayBtn"), pick = $("#datePick");
+    if (prev) prev.addEventListener("click", function () { estado.data = addDias(estado.data, -1); estado.view = "dia"; setView(); render(); });
+    if (next) next.addEventListener("click", function () { estado.data = addDias(estado.data, 1); estado.view = "dia"; setView(); render(); });
+    if (today) today.addEventListener("click", function () { estado.data = hojeISO(); estado.view = "dia"; setView(); render(); });
+    if (pick) pick.addEventListener("change", function () { if (pick.value) { estado.data = pick.value; estado.view = "dia"; setView(); render(); } });
+
+    // Abas de visualização
+    $$(".viewtab").forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        estado.view = tab.getAttribute("data-view");
+        setView();
+        render();
+      });
+    });
+
+    // Filtros
+    var pro = $("#fPro");
+    if (pro) pro.addEventListener("change", function () { estado.pro = pro.value; render(); });
+    var busca = $("#fSearch");
+    if (busca) busca.addEventListener("input", function () { estado.busca = busca.value; render(); });
+
+    var statusWrap = $("#fStatus");
+    if (statusWrap) {
+      statusWrap.addEventListener("click", function (e) {
+        var b = e.target.closest("[data-status]");
+        if (!b) return;
+        estado.status = b.getAttribute("data-status");
+        renderStatusFiltro();
+        render();
+      });
+    }
+
+    // Ações nos agendamentos
+    var body = $("#agendaBody");
+    if (body) {
+      body.addEventListener("click", function (e) {
+        var b = e.target.closest("[data-set]");
+        if (!b) return;
+        definirStatus(b.getAttribute("data-id"), b.getAttribute("data-set"));
+      });
+    }
+
+    // Exportar / imprimir
+    var csvBtn = $("#csvBtn");
+    if (csvBtn) csvBtn.addEventListener("click", exportarCSV);
+    var printBtn = $("#printBtn");
+    if (printBtn) printBtn.addEventListener("click", function () { window.print(); });
+
+    // Sincroniza se o agendamento mudar em outra aba
+    window.addEventListener("storage", function (e) {
+      if (e.key === STORAGE_KEY && !$("#dash").hidden) { carregar(); render(); }
+    });
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden && !$("#dash").hidden) { carregar(); render(); }
+    });
+  }
+
+  function setView() {
+    $$(".viewtab").forEach(function (t) {
+      var on = t.getAttribute("data-view") === estado.view;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    var pick = $("#datePick");
+    if (pick) pick.value = estado.data;
+    var nav = $(".datebar__nav");
+    if (nav) nav.style.opacity = estado.view === "dia" ? "1" : "0.5";
+  }
+
+  /* =========================================================
+     12) INIT
+     ========================================================= */
+
+  function init() {
+    carregar();
+    var pick = $("#datePick");
+    if (pick) pick.value = estado.data;
+    renderStatusFiltro();
+    setView();
+    bind();
+
+    if (estaLiberado()) mostrarPainel();
+    else {
+      $("#lock").hidden = false;
+      $("#dash").hidden = true;
+      $("#lockBtn").hidden = true;
+      var pin = $("#pin");
+      if (pin) pin.focus();
+    }
+
+    // Sinaliza para o HTML que o sistema carregou e está pronto
+    window.__agendaPronta = true;
+    var st = $("#lockStatus");
+    if (st) st.textContent = "Sistema carregado ✔ (v4)";
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+
+</script>
+</body>
+</html>

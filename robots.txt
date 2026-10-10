@@ -1,6 +1,10 @@
 # Robots.txt — Barbearia Garagem 110
 User-agent: *
 Allow: /
+Disallow: /agenda.html
+Disallow: /agendamento.html
+Disallow: /painel.html
+Disallow: /Beta/
 
 # Mapa do site (troque o domínio quando publicar)
 Sitemap: https://www.garagem110.com.br/sitemap.xml

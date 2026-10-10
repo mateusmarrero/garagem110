@@ -13,6 +13,12 @@ Landing page com visual **urbano/street**, feita em HTML, CSS e JavaScript puros
 | `agendamento.html` | **Sistema de agendamento** (catálogo + marcação de horário) |
 | `agendamento.css`  | Visual exclusivo do agendamento |
 | `agendamento.js`   | Lógica do agendamento (serviços, horários, salvamento) |
+| `agenda.html` | **Agenda do barbeiro** (painel interno, acesso por PIN) |
+| `agenda.css`  | Visual do painel da agenda |
+| `agenda.js`   | Lógica da agenda (agrupamento, filtros, status) |
+| `painel.html` | **Versão autossuficiente da agenda** (CSS e JS embutidos — recomendada) |
+| `google-agenda/Code.gs` | **Backend no Google Apps Script** (salva na Planilha + cria evento no Google Calendar) |
+| `google-agenda/COMO-CONFIGURAR.md` | **Guia passo a passo** para ativar o modo nuvem |
 | `img/logo.png`| O logotipo (fundo transparente)|
 
 ## Como visualizar
@@ -38,12 +44,19 @@ Clique duas vezes em `index.html` — ele abre no navegador.
 Site **orquestrado por Mateus Marrero** — https://linktr.ee/mateusmarrero
 (O crédito aparece no rodapé e direciona para o Linktree.)
 
-## 🔗 Agendamento (sistema próprio)
+## 🔗 Agendamento
 
-O site tem um **sistema de agendamento próprio** em `agendamento.html`.
-Todos os botões "Agendar online" do site apontam para ele.
+> ⚠️ **Estado atual:** os botões "Agendar online" apontam para o **AppBarber**
+> (`https://sites.appbarber.com.br/barbeariagarage-dxip`), abrindo em nova aba.
+>
+> Para voltar ao **sistema próprio** (`agendamento.html`), troque
+> `https://sites.appbarber.com.br/barbeariagarage-dxip` por `agendamento.html`
+> e remova o `target="_blank" rel="noopener"` desses links no `index.html`.
 
-O cliente escolhe:
+### Sistema próprio (em `agendamento.html`)
+
+O site também tem um **sistema de agendamento próprio**. Quando os botões apontam
+para ele, o cliente escolhe:
 
 1. **Serviços** (catálogo com preço e duração) — pode marcar mais de um;
 2. **Profissional** (ou "Sem preferência" — o sistema atribui quem estiver livre);
@@ -94,8 +107,95 @@ Tudo fica em `agendamento.js`, no bloco **"1) CONFIGURAÇÃO"**:
 - **`ALMOCO`**, **`INTERVALO`** (de quantos em quantos minutos são os horários),
   **`DIAS_VISIVEIS`** (quantos dias aparecem) e **`BUFFER`** (antecedência mínima).
 
-> Para apontar os botões de volta para o AppBarber, troque `agendamento.html`
-> por `https://sites.appbarber.com.br/barbeariagarage-dxip` no `index.html`.
+> Para alternar entre o **AppBarber** e o **sistema próprio**, veja a seção
+> **🔗 Agendamento** no início deste README.
+
+## 🧑‍🔧 Agenda do barbeiro (painel interno)
+
+A página **`painel.html`** é o painel da equipe. Ela lê os agendamentos salvos
+no mesmo dispositivo e mostra tudo **organizado**.
+
+> **Use o `painel.html`.** Ele é **autossuficiente** (o código já vem embutido na
+> própria página), então funciona mesmo com o navegador guardando cache e não
+> depende de arquivos separados. É o arquivo recomendado para o dia a dia.
+> (`agenda.html` + `agenda.js` são a versão "separada", úteis para manutenção.)
+
+**Acesso:** protegido por um **PIN**, definido dentro do `painel.html` (procure
+por `var PIN =`):
+
+```js
+var PIN = "110110";   // <-- troque pelo PIN da equipe
+```
+
+> Ao editar o PIN dentro do `painel.html`, **salve o arquivo** e reabra/recarregue
+> a página. Como o código já está embutido, não há o problema de cache do arquivo
+> JS separado.
+
+- Aceita **letras e números** (pode ser só números, como no exemplo).
+- A comparação ignora **maiúsculas/minúsculas** e espaços nas pontas
+  (então `JOAO110`, `joao110` e ` joao110 ` funcionam).
+- O desbloqueio dura enquanto a aba estiver aberta (botão **Bloquear** no menu
+  encerra a sessão).
+
+> 💡 Na tela de acesso aparece a linha **"Sistema carregado ✔ (v4)"**. Se ela ficar
+> em **"Carregando o sistema…"**, o JavaScript não rodou: confirme que você abriu
+> o arquivo em um **navegador de verdade** (Chrome/Edge/Firefox), e não no painel
+> de visualização do editor.
+
+**O painel tem:**
+
+- **Indicadores do dia:** nº de atendimentos, **faturamento previsto** (soma os
+  não cancelados), **horas na cadeira** e **concluídos**;
+- **Navegação por data** (‹ dia › / "Hoje" / calendário) e duas visões:
+  **Dia** e **Próximos** (agrupados por data);
+- **Filtros:** por **profissional**, por **status** e **busca** (nome, telefone
+  ou serviço);
+- **Ficha de cada atendimento:** horário, duração, cliente, telefone, serviços,
+  observação, profissional, valor e status;
+- **Ações:** `Concluir`, `Faltou`, `Cancelar`, `Reabrir` e **WhatsApp** do
+  cliente (mensagem direta);
+- **Exportar CSV** (abre no Excel) e **Imprimir** (o CSS de impressão já esconde
+  os botões e deixa só a lista).
+
+### ☁️ Modo nuvem (Google Sheets + Google Calendar) — recomendado
+
+O sistema tem **dois modos**, controlados pela variável `API_URL`:
+
+| `API_URL` | Comportamento |
+| --- | --- |
+| **preenchida** | **Modo nuvem.** Os agendamentos ficam numa **Planilha do Google**; o horário ocupado fica **bloqueado para todo mundo** e cada agendamento vira um **evento no Google Calendar**. |
+| **`""` (vazia)** | **Modo local** (padrão). Tudo fica salvo só no navegador daquele aparelho. |
+
+**Para ativar a nuvem**, siga o guia **`google-agenda/COMO-CONFIGURAR.md`**.
+Resumo: você cria uma **Planilha do Google**, cola o script
+**`google-agenda/Code.gs`** no **Apps Script**, publica como **App da Web** e cola
+a URL gerada em **dois** lugares:
+
+1. **`agendamento.js`** — na linha `var API_URL = "";`
+2. **`painel.html`** — na linha `var API_URL = "";` (o arquivo é autossuficiente e
+   tem a sua própria cópia).
+
+Feito isso:
+
+- ao agendar no site, a vaga é gravada na planilha e o **evento aparece na sua
+  Agenda do Google**;
+- o horário ocupado passa a aparecer **bloqueado para todos** que abrirem o site;
+- o **`painel.html`** passa a ler os agendamentos **da nuvem** (não mais só do
+  aparelho), e as ações `Concluir`/`Faltou`/`Cancelar` gravam de volta.
+
+> O sistema tem **verificação de conflito no servidor**: se duas pessoas tentarem
+> o mesmo horário com o mesmo profissional ao mesmo tempo, só a primeira entra e
+> a segunda recebe o aviso **"Esse horário acabou de ser ocupado"**.
+
+**Uso no balcão (modo local, sem nuvem):**
+
+1. Deixe o site aberto em um **tablet ou PC do balcão** (ex.: `agendamento.html`);
+2. Os clientes que chegam ou pedem pelo WhatsApp são **lançados ali** pelo
+   atendente (leva ~30 s);
+3. O barbeiro abre `painel.html` nesse mesmo aparelho e vê tudo do dia.
+
+> Sem nuvem, o cliente **não** consegue ver no celular dele os horários já
+> ocupados no balcão — por isso o **modo nuvem** é o recomendado.
 
 ## 🖼️ Fotos
 
@@ -205,6 +305,9 @@ Já incluído no `index.html`:
 - Open Graph e Twitter Card (bom preview ao compartilhar no WhatsApp/Facebook)
 - Metadados de geolocalização
 - Arquivos `robots.txt` e `sitemap.xml`
+- **Páginas fora do Google** (bloqueadas no `robots.txt` e com `noindex`):
+  `agenda.html`, `agendamento.html`, `painel.html` e a pasta `Beta/`
+  - `agendamento.html` também saiu do `sitemap.xml` (o canal de agendamento atual é o AppBarber)
 
 ### ⚠️ ANTES de publicar: troque o domínio
 

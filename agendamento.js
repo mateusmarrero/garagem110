@@ -7,6 +7,10 @@
 (function () {
   "use strict";
 
+  // Evita inicializar duas vezes caso o script seja carregado em dobro
+  if (window.__agendamentoCarregado) return;
+  window.__agendamentoCarregado = true;
+
   /* =========================================================
      1) CONFIGURAÇÃO  (edite aqui)
      ========================================================= */
@@ -71,6 +75,15 @@
   var BUFFER = 15;         // minutos mínimos de antecedência para agendar hoje
 
   var STORAGE_KEY = "garagem110-agendamentos";
+
+  /* =========================================================
+     INTEGRAÇÃO COM A NUVEM (Google Sheets + Google Calendar)
+     ---------------------------------------------------------
+     Cole abaixo a URL do Web App do Google Apps Script.
+     O passo a passo está em: google-agenda/COMO-CONFIGURAR.md
+     Deixe "" para funcionar só no navegador (modo local/offline).
+     ========================================================= */
+  var API_URL = "";
 
   /* =========================================================
      2) HELPERS
@@ -147,7 +160,8 @@
     hora: null              // "HH:MM"
   };
 
-  var agendamentos = carregar();
+  var agendamentos = carregar();   // agendamentos deste navegador ("Meus agendamentos")
+  var remotos = [];                // agendamentos vindos da nuvem (Google Sheets), se configurada
 
   /* =========================================================
      4) PERSISTÊNCIA
@@ -165,6 +179,48 @@
   }
 
   /* =========================================================
+     4b) NUVEM (Google Sheets + Google Calendar via Apps Script)
+     ========================================================= */
+
+  function apiAtiva() { return !!API_URL; }
+
+  function apiCarregarRemotos() {
+    if (!apiAtiva()) return Promise.resolve();
+    return fetch(API_URL + "?action=agendamentos", { method: "GET" })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok && Array.isArray(res.agendamentos)) {
+          remotos = res.agendamentos.filter(function (a) { return a && a.id && a.data && a.hora; });
+        }
+      })
+      .catch(function () { /* offline: segue com os dados locais */ });
+  }
+
+  function enviarParaNuvem(ag) {
+    return fetch(API_URL, {
+      method: "POST",
+      // text/plain evita o "preflight" de CORS no Google Apps Script
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "criar", agendamento: ag })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok) remotos.push(ag);
+        return res || {};
+      })
+      .catch(function () { return { ok: false, erro: "rede" }; });
+  }
+
+  function apiStatus(id, status) {
+    if (!apiAtiva()) return Promise.resolve({ ok: false });
+    return fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "status", id: id, status: status })
+    }).then(function (r) { return r.json(); }).catch(function () { return { ok: false }; });
+  }
+
+  /* =========================================================
      5) DISPONIBILIDADE
      ========================================================= */
 
@@ -178,11 +234,24 @@
     return selecionados().reduce(function (s, x) { return s + x.preco; }, 0);
   }
 
+  // Junta nuvem + local, sem repetir pelo id
+  function todosParaDisponibilidade() {
+    var vistos = {}, out = [];
+    remotos.concat(agendamentos).forEach(function (a) {
+      if (!a || !a.id || !a.data || !a.hora) return;
+      if (vistos[a.id]) return;
+      vistos[a.id] = true;
+      out.push(a);
+    });
+    return out;
+  }
+
   function busyMap(dataISO) {
     var map = {};
     BARBEIROS.forEach(function (b) { map[b.id] = []; });
-    agendamentos.forEach(function (a) {
+    todosParaDisponibilidade().forEach(function (a) {
       if (a.data !== dataISO) return;
+      if (a.status === "cancelado") return;
       if (!map[a.barbeiro]) map[a.barbeiro] = [];
       map[a.barbeiro].push([toMin(a.hora), toMin(a.hora) + a.duracao]);
     });
@@ -494,16 +563,42 @@
       criadoEm: new Date().toISOString()
     };
 
+    if (apiAtiva()) {
+      confirmarNaNuvem(ag);
+    } else {
+      concluirAgendamento(ag);
+    }
+  }
+
+  // Envia para a nuvem e só confirma se o servidor aceitar (evita dois clientes no mesmo horário)
+  function confirmarNaNuvem(ag) {
+    var btn = $("#confirmBtn");
+    if (btn) { btn.disabled = true; btn.textContent = "Enviando…"; }
+    enviarParaNuvem(ag).then(function (res) {
+      if (btn) { btn.disabled = false; btn.textContent = "Confirmar agendamento"; }
+      if (res && res.ok) {
+        concluirAgendamento(ag);
+      } else if (res && res.conflito) {
+        erro("Esse horário acabou de ser ocupado. Escolha outro.");
+        estado.hora = null;
+        apiCarregarRemotos().then(sync);
+      } else {
+        concluirAgendamento(ag, "Não deu para enviar para a nuvem agora. O agendamento ficou salvo neste aparelho — confirme pelo WhatsApp para garantir.");
+      }
+    });
+  }
+
+  function concluirAgendamento(ag, aviso) {
     agendamentos.push(ag);
     salvar();
 
-    abrirSucesso(ag);
+    abrirSucesso(ag, aviso);
     renderMinhaAgenda();
 
     // Limpa a seleção (mantém nome e telefone por conveniência)
     estado.selecionados = [];
     estado.hora = null;
-    obs.value = "";
+    $("#obs").value = "";
     estado.data = primeiroDiaLivre();
     renderServicos();
     sync();
@@ -533,9 +628,9 @@
 
   var ultimo = null;
 
-  function abrirSucesso(ag) {
+  function abrirSucesso(ag, aviso) {
     ultimo = ag;
-    $("#successDetails").innerHTML = linhas([
+    $("#successDetails").innerHTML = (aviso ? '<p class="modal__warn">⚠️ ' + esc(aviso) + "</p>" : "") + linhas([
       ["Serviços", ag.servicos.join(", ")],
       ["Profissional", esc(ag.barbeiroNome)],
       ["Dia", fmtDataLonga(ag.data)],
@@ -662,6 +757,11 @@
     if (!window.confirm("Cancelar o agendamento de " + fmtDataCurta(ag.data) + " às " + ag.hora + "?")) return;
     agendamentos = agendamentos.filter(function (a) { return a.id !== id; });
     salvar();
+    // Libera o horário na nuvem também (se configurada)
+    if (apiAtiva()) {
+      remotos = remotos.filter(function (a) { return a.id !== id; });
+      apiStatus(id, "cancelado");
+    }
     renderMinhaAgenda();
     sync();
   }
@@ -806,6 +906,18 @@
     sync();
     renderMinhaAgenda();
     bind();
+
+    // Se a nuvem estiver configurada, busca os horários já ocupados
+    if (apiAtiva()) {
+      apiCarregarRemotos().then(function () {
+        if (!estado.hora) estado.data = primeiroDiaLivre();
+        sync();
+        renderMinhaAgenda();
+      });
+    }
+
+    // Sinaliza para o HTML que o sistema carregou
+    window.__agendamentoPronta = true;
   }
 
   if (document.readyState === "loading") {

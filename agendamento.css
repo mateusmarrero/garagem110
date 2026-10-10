@@ -534,6 +534,16 @@
   margin-bottom: 16px;
 }
 .modal__body { text-align: left; margin-bottom: 22px; }
+.modal__warn {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
 .modal__line {
   display: flex;
   justify-content: space-between;

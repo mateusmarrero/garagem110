@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="agenda.css" />
+  <link rel="stylesheet" href="agenda.css?v=2" />
 </head>
 <body>
 
@@ -53,12 +53,16 @@
       <p class="lock__sub">Digite o PIN para acessar os agendamentos.</p>
 
       <label class="sr-only" for="pin">PIN de acesso</label>
-      <input id="pin" class="lock__pin" type="password" inputmode="numeric" autocomplete="off"
-             placeholder="• • • • • •" maxlength="12" aria-describedby="lockMsg" />
+      <div class="lock__pinwrap">
+        <input id="pin" class="lock__pin" type="password" autocomplete="off"
+               placeholder="Digite o PIN" maxlength="24" aria-describedby="lockMsg" />
+        <button class="lock__show" id="pinToggle" type="button" aria-label="Mostrar PIN" aria-pressed="false">👁</button>
+      </div>
       <p class="lock__msg" id="lockMsg" role="alert" aria-live="assertive"></p>
 
       <button class="btn btn--primary lock__btn" type="submit">Entrar</button>
-      <p class="lock__hint">Dica: o PIN é definido no arquivo <code>agenda.js</code> (variável <code>PIN</code>).</p>
+      <p class="lock__hint">O PIN fica no arquivo <code>agenda.js</code> (variável <code>PIN</code>). Ao alterá-lo, recarregue a página com <strong>Ctrl+F5</strong> (ou Ctrl+Shift+R) para o navegador não usar a versão antiga em cache.</p>
+      <p class="lock__status" id="lockStatus">Carregando o sistema…</p>
     </form>
   </section>
 
@@ -146,6 +150,42 @@
   </div>
 
   <script src="script.js"></script>
-  <script src="agenda.js"></script>
+
+  <!-- Diagnóstico: mostra na tela qualquer erro de JavaScript -->
+  <script>
+    window.addEventListener("error", function (ev) {
+      var m = document.getElementById("lockMsg");
+      if (m && !m.textContent) m.textContent = "Erro ao carregar: " + (ev.message || "falha") + " — recarregue com Ctrl+F5.";
+    });
+  </script>
+
+  <!-- Carrega o agenda.js tentando evitar o cache do navegador.
+       Se o navegador não aceitar o carimbo (?t=), usa o caminho simples. -->
+  <script>
+    (function () {
+      var simplesJa = false;
+      function carregarSimples() {
+        if (simplesJa || window.__agendaPronta) return;
+        simplesJa = true;
+        var f = document.createElement("script");
+        f.src = "agenda.js";
+        document.body.appendChild(f);
+      }
+      var s = document.createElement("script");
+      s.src = "agenda.js?t=" + Date.now();
+      s.onerror = carregarSimples;
+      document.body.appendChild(s);
+      setTimeout(function () {
+        if (window.__agendaPronta) return;
+        carregarSimples();
+        setTimeout(function () {
+          if (!window.__agendaPronta) {
+            var m = document.getElementById("lockMsg");
+            if (m) m.textContent = "O sistema não iniciou. Verifique se 'agenda.js' está na mesma pasta e recarregue com Ctrl+F5.";
+          }
+        }, 1500);
+      }, 1500);
+    })();
+  </script>
 </body>
 </html>

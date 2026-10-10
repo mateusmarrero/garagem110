@@ -7,7 +7,7 @@
   <meta name="description" content="Agende seu corte, barba ou combo na Barbearia Garagem 110 (Campo Grande, Rio de Janeiro). Escolha o serviço, veja o preço, o profissional e o melhor horário. Confirme em segundos." />
   <meta name="keywords" content="agendar barbearia, agendamento online, barbearia Campo Grande, corte, barba, degrade" />
   <meta name="author" content="Barbearia Garagem 110" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#0b0b0d" />
   <link rel="canonical" href="https://www.garagem110.com.br/agendamento.html" />
 
@@ -28,7 +28,7 @@
   <link rel="icon" type="image/png" href="img/logo.png" />
   <link rel="apple-touch-icon" href="img/logo.png" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="agendamento.css" />
+  <link rel="stylesheet" href="agendamento.css?v=2" />
 </head>
 <body>
 
@@ -228,6 +228,7 @@
       <p class="footer__info">Rua Santo Sigfrido, 110 — Campo Grande, Rio de Janeiro/RJ &nbsp;•&nbsp; (21) 97018-9712</p>
       <p class="footer__copy">© <span id="ano"></span> Garagem 110. Todos os direitos reservados.</p>
       <p class="footer__credit">Site orquestrado por <a href="https://linktr.ee/mateusmarrero" target="_blank" rel="noopener">Mateus Marrero</a></p>
+      <p class="footer__credit">Equipe: <a href="painel.html">agenda do barbeiro</a></p>
     </div>
   </footer>
 
@@ -276,6 +277,23 @@
   </a>
 
   <script src="script.js"></script>
-  <script src="agendamento.js"></script>
+  <!-- Carrega o agendamento.js tentando evitar o cache; com plano B simples -->
+  <script>
+    (function () {
+      var simplesJa = false;
+      function carregarSimples() {
+        if (simplesJa || window.__agendamentoPronta) return;
+        simplesJa = true;
+        var f = document.createElement("script");
+        f.src = "agendamento.js";
+        document.body.appendChild(f);
+      }
+      var s = document.createElement("script");
+      s.src = "agendamento.js?t=" + Date.now();
+      s.onerror = carregarSimples;
+      document.body.appendChild(s);
+      setTimeout(function () { if (!window.__agendamentoPronta) carregarSimples(); }, 1500);
+    })();
+  </script>
 </body>
 </html>
