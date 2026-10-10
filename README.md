@@ -90,8 +90,10 @@ Tudo fica em `agendamento.js`, no bloco **"1) CONFIGURAÇÃO"**:
 - **`BARBEIROS`** — equipe. Troque os nomes; `"any"` é o "Sem preferência":
   ```js
   var BARBEIROS = [
-    { id: "any",    nome: "Sem preferência" },
-    { id: "wesley", nome: "Wesley" }
+    { id: "any",      nome: "Sem preferência" },
+    { id: "giovanni", nome: "Giovanni" },
+    { id: "joao",     nome: "Joao" },
+    { id: "madruga",  nome: "Madruga" }
   ];
   ```
 - **`HORARIOS`** — funcionamento por dia da semana (`0`=Dom … `6`=Sáb).

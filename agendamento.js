@@ -53,10 +53,10 @@
 
   // Equipe — edite os nomes. "any" = sem preferência (o sistema atribui quem estiver livre).
   var BARBEIROS = [
-    { id: "any",    nome: "Sem preferência" },
-    { id: "wesley", nome: "Wesley" },
-    { id: "diego",  nome: "Diego" },
-    { id: "thiago", nome: "Thiago" }
+    { id: "any",      nome: "Sem preferência" },
+    { id: "giovanni", nome: "Giovanni" },
+    { id: "joao",     nome: "Joao" },
+    { id: "madruga",  nome: "Madruga" }
   ];
 
   // Funcionamento: 0=Dom, 1=Seg, 2=Ter, 3=Qua, 4=Qui, 5=Sex, 6=Sáb
