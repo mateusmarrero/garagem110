@@ -7,4 +7,4 @@ Disallow: /painel.html
 Disallow: /Beta/
 
 # Mapa do site (troque o domínio quando publicar)
-Sitemap: https://www.garagem110.com.br/sitemap.xml
+Sitemap: https://garagem110.vercel.app/sitemap.xml
