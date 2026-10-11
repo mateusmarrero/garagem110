@@ -31,7 +31,7 @@ Clique duas vezes em `index.html` — ele abre no navegador.
 - **Slogan:** "Há mais de 10 anos oferecendo compromisso e qualidade."
 - **Lema:** "Uma nova experiência para uma antiga tradição."
 - **Endereço:** Rua Santo Sigfrido, 110 — Loja — Campo Grande, Rio de Janeiro/RJ — CEP 23055-150
-- **Telefone / WhatsApp:** (21) 97018-9712 → link `https://wa.me/5521970189712`
+- **Telefone / WhatsApp:** (21) 97018-9712 → link `https://wa.me/5521970189712?text=...` (todos os botões abrem com a mensagem pré-preenchida: _"Olá, vim pelo site e gostaria de mais informações, pode me ajudar?"_)
 - **Agendamento online:** https://sites.appbarber.com.br/barbeariagarage-dxip
 - **Horários:** Terça a Quinta 09–19h · Sexta 09–19:30 · Sábado 09–20h · Dom/Seg fechado (almoço 12–13:30)
 - **Comodidades:** ambiente climatizado, café, wi-fi, estacionamento, acessibilidade, atende crianças
@@ -311,11 +311,12 @@ Já incluído no `index.html`:
   `agenda.html`, `agendamento.html`, `painel.html` e a pasta `Beta/`
   - `agendamento.html` também saiu do `sitemap.xml` (o canal de agendamento atual é o AppBarber)
 
-### ⚠️ ANTES de publicar: troque o domínio
+### 🌐 Domínio
 
-Usei `https://www.garagem110.com.br/` como exemplo. Quando publicar (Netlify,
-Vercel, etc.), troque **todas** as ocorrências pelo seu endereço real nos arquivos:
-`index.html` (8x), `sitemap.xml` (1x) e `robots.txt` (1x).
+O domínio atual publicado é **`https://garagem110.vercel.app/`**, já aplicado em
+`index.html` (canonical, Open Graph, Twitter e JSON-LD), `sitemap.xml` e `robots.txt`.
+Se um dia usar um domínio próprio (ex.: `garagem110.com.br`), troque **todas** as
+ocorrências de `https://garagem110.vercel.app` pelo novo endereço.
 
 ### Dica extra de SEO local
 

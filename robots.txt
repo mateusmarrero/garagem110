@@ -6,5 +6,5 @@ Disallow: /agendamento.html
 Disallow: /painel.html
 Disallow: /Beta/
 
-# Mapa do site (troque o domínio quando publicar)
+# Mapa do site
 Sitemap: https://garagem110.vercel.app/sitemap.xml
